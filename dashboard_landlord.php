@@ -418,6 +418,15 @@ $today_date = date("l, F j, Y");
             $images = json_decode($my_house['images'], true);
             $thumb = !empty($images) ? "assets/uploads/rooms/" . $images[0] : "assets/default_room.jpg";
             $r_count = $conn->query("SELECT COUNT(*) as c FROM room_units WHERE property_id = " . $my_house['id'])->fetch_assoc()['c'];
+            
+            // NEW: Status Logic
+            $p_stat = !empty($my_house['status']) ? $my_house['status'] : 'Accepting';
+            $bg_color = '#198754'; // default green
+            $text_color = '#ffffff';
+            
+            if ($p_stat == 'Full') { $bg_color = '#dc3545'; }
+            elseif ($p_stat == 'Renovating') { $bg_color = '#ffc107'; $text_color = '#000000'; }
+            elseif ($p_stat == 'Closed') { $bg_color = '#6c757d'; }
         ?>
         <div class="house-card">
             <div class="house-hero">
@@ -426,6 +435,11 @@ $today_date = date("l, F j, Y");
             </div>
             <div class="house-body d-flex justify-content-between align-items-end">
                 <span class="house-badge"><?php echo $r_count; ?> Rooms</span>
+                
+                <span style="background-color: <?php echo $bg_color; ?>; color: <?php echo $text_color; ?>; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 12px; position: absolute; top: -15px; left: 110px;">
+                    <?php echo htmlspecialchars($p_stat); ?>
+                </span>
+
                 <div>
                     <h2 class="mb-2"><?php echo htmlspecialchars($my_house['title']); ?></h2>
                     <p class="text-muted mb-0"><i class="bi bi-geo-alt-fill me-2"></i><?php echo htmlspecialchars($my_house['location']); ?></p>
